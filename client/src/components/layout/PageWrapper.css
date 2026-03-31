@@ -1,0 +1,26 @@
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.page-wrapper__content {
+  flex: 1;
+  padding: var(--space-xl);
+  transition: margin-left var(--transition-base);
+  min-height: 100vh;
+}
+
+.page-wrapper__content.sidebar-open {
+  margin-left: var(--sidebar-width);
+}
+
+.page-wrapper__content.sidebar-collapsed {
+  margin-left: var(--sidebar-collapsed);
+}
+
+@media (max-width: 768px) {
+  .page-wrapper__content {
+    margin-left: var(--sidebar-collapsed) !important;
+    padding: var(--space-md);
+  }
+}

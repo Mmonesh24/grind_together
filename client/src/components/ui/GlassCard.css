@@ -1,0 +1,21 @@
+.glass-card-component {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-lg);
+  transition: all var(--transition-base);
+}
+
+.glass-card-component:hover {
+  transform: scale(1.01);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-card), 0 0 15px var(--accent-glow);
+}
+
+.glass-card-component.glow {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}

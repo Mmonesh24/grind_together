@@ -1,29 +1,13 @@
 {
-  "name": "GrindTogether",
+  "name": "grindtogether",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "type": "module",
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "check-types": "turbo check-types",
-    "dev:native": "turbo -F native dev",
-    "dev:web": "turbo -F web dev",
-    "dev:server": "turbo -F server dev"
-  },
-  "dependencies": {
-    "@GrindTogether/env": "workspace:*",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
+    "dev": "concurrently -n server,client -c green,cyan \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "install:all": "cd server && npm install && cd ../client && npm install"
   },
   "devDependencies": {
-    "@GrindTogether/config": "workspace:*",
-    "@types/node": "^22.13.14",
-    "turbo": "^2.6.3",
-    "typescript": "^5"
+    "concurrently": "^9.1.2"
   }
 }

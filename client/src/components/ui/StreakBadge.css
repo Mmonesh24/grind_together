@@ -1,0 +1,29 @@
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.streak-badge__flame {
+  font-size: 1.25rem;
+  animation: flicker 1.5s ease-in-out infinite;
+}
+
+.streak-badge__count {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--accent-primary);
+}
+
+.streak-badge__label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

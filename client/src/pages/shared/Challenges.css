@@ -1,0 +1,103 @@
+.challenges-page__title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  margin-bottom: var(--space-lg);
+}
+
+.challenges-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.challenges-tab {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-full);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+}
+
+.challenges-tab:hover { border-color: var(--text-muted); }
+.challenges-tab.active {
+  background: var(--accent-glow);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.challenges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-md);
+}
+
+.challenge-card { display: flex; flex-direction: column; gap: var(--space-md); }
+
+.challenge-card__header {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+
+.challenge-card__icon { font-size: 2rem; }
+
+.challenge-card__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.challenge-card__desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-xs);
+}
+
+.challenge-card__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.challenge-card__days { color: var(--warning); font-weight: 500; }
+
+.challenge-card__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-primary);
+}
+
+.challenge-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.challenge-card__participants {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.challenge-card__join {
+  padding: var(--space-xs) var(--space-md);
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.challenge-card__join:hover { box-shadow: var(--shadow-glow); transform: translateY(-1px); }
+
+.challenge-card__joined {
+  font-size: 0.8rem;
+  color: var(--accent-primary);
+  font-weight: 500;
+}

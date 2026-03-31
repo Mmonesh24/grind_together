@@ -1,70 +1,94 @@
-# GrindTogether
+# GrindTogether — Community Fitness Progress Tracker
 
-This project was created with [Better Fullstack](https://github.com/Marve10s/Better-Fullstack), a modern TypeScript stack that combines React, React Router, Express, TRPC, and more.
+> A production-grade social fitness platform that turns the gym into a competitive, accountable social ecosystem.
 
-## Features
+## 🎨 Design — "Dark Neon Gym"
 
-- **TypeScript** - For type safety and improved developer experience
-- **React Router** - Declarative routing for React
-- **TailwindCSS** - CSS framework
-- **shadcn/ui** - UI components
-- **Express** - Fast, unopinionated web framework
-- **tRPC** - End-to-end type-safe APIs
-- **Node.js** - Runtime environment
-- **Mongoose** - TypeScript-first ORM
-- **MongoDB** - Database engine
-- **Authentication** - Better Auth
-- **Turborepo** - Optimized monorepo build system
+Premium dark-mode interface with electric green energy, glassmorphism depth, and micro-animations.
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18 + Vite |
+| Routing | React Router v6 |
+| State | Zustand + TanStack Query |
+| Charts | Recharts |
+| Styling | Vanilla CSS + Design Tokens |
+| Backend | Express.js |
+| Auth | JWT (access + refresh) + bcryptjs |
+| Validation | Zod |
+| Realtime | Socket.io |
+| Database | MongoDB + Mongoose |
 
 ## Getting Started
 
-First, install the dependencies:
+### Prerequisites
+- Node.js 20+
+- MongoDB running locally (or MongoDB Atlas URI)
+
+### Install
 
 ```bash
-pnpm install
+# Install all dependencies
+cd server && npm install
+cd ../client && npm install
+cd ..
+npm install
 ```
 
-## Database Setup
-
-This project uses MongoDB with mongoose.
-
-1. Make sure you have MongoDB set up.
-2. Update your `apps/server/.env` file with your MongoDB connection URI.
-
-3. Apply the schema to your database:
+### Configure
 
 ```bash
-pnpm run db:push
+# Copy env template
+cp server/.env.example server/.env
+# Edit server/.env with your MongoDB URI if needed
 ```
 
-Then, run the development server:
+### Run
 
 ```bash
-pnpm run dev
-```
+# Start both client and server
+npm run dev
 
-Open [http://localhost:5173](http://localhost:5173) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
+# Or separately:
+npm run dev:server   # http://localhost:3000
+npm run dev:client   # http://localhost:5173
+```
 
 ## Project Structure
 
 ```
 GrindTogether/
-├── apps/
-│   ├── web/         # Frontend application (React + React Router)
-│   └── server/      # Backend API (Express, TRPC)
-├── packages/
-│   ├── api/         # API layer / business logic
-│   ├── auth/        # Authentication configuration & logic
-│   └── db/          # Database schema & queries
+├── client/                # React Frontend (Vite)
+│   └── src/
+│       ├── components/    # UI (GlassCard, StatCard, StreakBadge, ProgressRing)
+│       ├── pages/         # Login, Register, Dashboard, Log, Profile, Leaderboard
+│       ├── store/         # Zustand stores (auth, ui)
+│       ├── services/      # API client with JWT interceptors
+│       └── styles/        # Design system (tokens, reset, globals)
+│
+├── server/                # Express Backend
+│   └── src/
+│       ├── models/        # User, DailyLog, Challenge, ChatMessage, Notification
+│       ├── controllers/   # Auth, Log, Profile, Leaderboard
+│       ├── middlewares/   # JWT auth, RBAC, Zod validation, error handler
+│       ├── services/      # Streak tracking, points system
+│       ├── routes/        # Express route definitions
+│       └── app.js         # Entry point
+│
+└── package.json           # Root — concurrent dev scripts
 ```
 
-## Available Scripts
+## Features (Phase 1)
 
-- `pnpm run dev`: Start all applications in development mode
-- `pnpm run build`: Build all applications
-- `pnpm run dev:web`: Start only the web application
-- `pnpm run dev:server`: Start only the server
-- `pnpm run check-types`: Check TypeScript types across all apps
-- `pnpm run db:push`: Push schema changes to database
-- `pnpm run db:studio`: Open database studio UI
+- ✅ JWT Authentication (access + refresh tokens, httpOnly cookies)
+- ✅ Role-Based Access Control (trainee/trainer)
+- ✅ Onboarding flow (profile, gym branch, starting stats)
+- ✅ Daily activity logging (checklist, nutrition, cardio, muscle split)
+- ✅ Points system (+5 log, +10 full checklist, +100 weekly streak, +500 monthly)
+- ✅ Streak tracking with automatic calculation
+- ✅ Trainee dashboard with stat cards, charts, and mini leaderboard
+- ✅ Full leaderboard (points & streaks tabs, podium display)
+- ✅ Profile page with stats and QR code
+- ✅ "Dark Neon Gym" design system with glassmorphism and micro-animations
