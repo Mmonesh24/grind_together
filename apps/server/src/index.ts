@@ -9,8 +9,11 @@ import { streamText, type UIMessage, convertToModelMessages, wrapLanguageModel }
 import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express from "express";
+import connectDB from "./config/db";
 
 const app = express();
+
+connectDB();
 
 app.use(
   cors({
