@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import GlassCard from '../../components/ui/GlassCard';
 import api from '../../services/api';
+import { getSocket } from '../../services/socket';
 import useAuthStore from '../../store/authStore';
 import './Leaderboard.css';
 
@@ -26,6 +27,26 @@ export default function Leaderboard() {
       setLoading(false);
     };
     fetchLeaderboard();
+
+    const socket = getSocket();
+    if (!socket) return;
+    
+    // We don't need to setLoading(true) on background refreshes, better UX.
+    const refreshLeaderboard = async () => {
+      try {
+        const endpoint = tab === 'points' ? '/leaderboard' : '/leaderboard/streaks';
+        const { data: res } = await api.get(`${endpoint}?limit=20`);
+        setData(res.data);
+      } catch {}
+    };
+
+    socket.on('leaderboard:update', refreshLeaderboard);
+    socket.on('points:update', refreshLeaderboard);
+
+    return () => {
+      socket.off('leaderboard:update', refreshLeaderboard);
+      socket.off('points:update', refreshLeaderboard);
+    };
   }, [tab]);
 
   return (
@@ -75,32 +96,34 @@ export default function Leaderboard() {
         ) : data.length === 0 ? (
           <p className="empty-state">No users yet. Be the first!</p>
         ) : (
-          <table className="leaderboard-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Name</th>
-                <th>Branch</th>
-                <th>{tab === 'points' ? 'Points' : 'Streak'}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((entry) => (
-                <tr key={entry.id} className={entry.id === user?.id ? 'me' : ''}>
-                  <td className="leaderboard-table__rank">
-                    {entry.rank <= 3
-                      ? ['🥇', '🥈', '🥉'][entry.rank - 1]
-                      : `#${entry.rank}`}
-                  </td>
-                  <td>{entry.name || 'Anonymous'}</td>
-                  <td className="leaderboard-table__branch">{entry.gymBranch || '—'}</td>
-                  <td className="leaderboard-table__score">
-                    {tab === 'points' ? entry.totalPoints : entry.currentStreak}
-                  </td>
+          <div className="table-container">
+            <table className="leaderboard-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Branch</th>
+                  <th>{tab === 'points' ? 'Points' : 'Streak'}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.map((entry) => (
+                  <tr key={entry.id} className={entry.id === user?.id ? 'me' : ''}>
+                    <td className="leaderboard-table__rank">
+                      {entry.rank <= 3
+                        ? ['🥇', '🥈', '🥉'][entry.rank - 1]
+                        : `#${entry.rank}`}
+                    </td>
+                    <td>{entry.name || 'Anonymous'}</td>
+                    <td className="leaderboard-table__branch">{entry.gymBranch || '—'}</td>
+                    <td className="leaderboard-table__score">
+                      {tab === 'points' ? entry.totalPoints : entry.currentStreak}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </GlassCard>
     </div>

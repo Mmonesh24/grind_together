@@ -9,8 +9,10 @@ export const getBranchMembers = catchAsync(async (req, res) => {
   const branch = req.user.profile?.gymBranch;
   if (!branch) return res.json({ status: 'success', data: [] });
 
+  const branchRegex = new RegExp(`^${branch}$`, 'i');
+
   const members = await User.find({
-    'profile.gymBranch': branch,
+    'profile.gymBranch': { $regex: branchRegex },
     role: 'trainee',
   }).select('email profile gamification createdAt');
 
@@ -80,13 +82,28 @@ export const getBranchStats = catchAsync(async (req, res) => {
   const branch = req.user.profile?.gymBranch;
   if (!branch) return res.json({ status: 'success', data: {} });
 
+  const branchRegex = new RegExp(`^${branch}$`, 'i');
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const totalMembers = await User.countDocuments({ 'profile.gymBranch': branch, role: 'trainee' });
+  const totalMembers = await User.countDocuments({ 
+    'profile.gymBranch': { $regex: branchRegex }, 
+    role: 'trainee' 
+  });
+  
+  // Find IDs of trainees in this branch
+  const trainees = await User.find({ 
+    'profile.gymBranch': { $regex: branchRegex }, 
+    role: 'trainee' 
+  }).select('_id');
+  const traineeIds = trainees.map(u => u._id);
+
   const activeToday = await DailyLog.countDocuments({
-    date: today,
-    userId: { $in: (await User.find({ 'profile.gymBranch': branch, role: 'trainee' }).select('_id')).map(u => u._id) },
+    date: { $gte: today, $lt: tomorrow },
+    userId: { $in: traineeIds },
   });
 
   const weekAgo = new Date();
@@ -94,14 +111,23 @@ export const getBranchStats = catchAsync(async (req, res) => {
   weekAgo.setHours(0, 0, 0, 0);
 
   const weeklyLogs = await DailyLog.countDocuments({
-    date: { $gte: weekAgo },
-    userId: { $in: (await User.find({ 'profile.gymBranch': branch, role: 'trainee' }).select('_id')).map(u => u._id) },
+    date: { $gte: weekAgo, $lt: tomorrow },
+    userId: { $in: traineeIds },
   });
 
   const avgStreak = await User.aggregate([
-    { $match: { 'profile.gymBranch': branch, role: 'trainee' } },
+    { $match: { 'profile.gymBranch': { $regex: branchRegex }, role: 'trainee' } },
     { $group: { _id: null, avg: { $avg: '$gamification.currentStreak' } } },
   ]);
+
+  // Get Online Count from Socket.io (using lowercased room)
+  const io = req.app.get('io');
+  let onlineCount = 0;
+  if (io && branch) {
+    const room = `branch:${branch.toLowerCase()}`;
+    const roomInfo = io.sockets.adapter.rooms.get(room);
+    onlineCount = roomInfo ? roomInfo.size : 0;
+  }
 
   res.json({
     status: 'success',
@@ -109,6 +135,7 @@ export const getBranchStats = catchAsync(async (req, res) => {
       totalMembers,
       activeToday,
       weeklyLogs,
+      onlineCount,
       avgStreak: Math.round(avgStreak[0]?.avg || 0),
       attendanceRate: totalMembers > 0 ? Math.round((activeToday / totalMembers) * 100) : 0,
     },

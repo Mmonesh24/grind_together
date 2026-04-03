@@ -21,4 +21,7 @@ export const broadcastActivity = (io, user, log) => {
     summary: summary.join(', ') || 'logged activity',
     time: new Date().toISOString(),
   });
+
+  // Emit a real-time signal to all in the branch to refresh their leaderboard rankings
+  io.to(`branch:${branch}`).emit('leaderboard:update');
 };

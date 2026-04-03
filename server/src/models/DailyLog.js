@@ -8,6 +8,10 @@ const dailyLogSchema = new mongoose.Schema(
       water: { type: Boolean, default: false },
       protein: { type: Boolean, default: false },
       workout: { type: Boolean, default: false },
+      breakfast: { type: Boolean, default: false },
+      lunch: { type: Boolean, default: false },
+      dinner: { type: Boolean, default: false },
+      snacks: { type: Boolean, default: false },
     },
     metrics: {
       caloriesBurned: { type: Number, default: 0 },

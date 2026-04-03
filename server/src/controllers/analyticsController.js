@@ -1,5 +1,6 @@
 import DailyLog from '../models/DailyLog.js';
 import User from '../models/User.js';
+import DailyPlan from '../models/DailyPlan.js';
 import catchAsync from '../utils/catchAsync.js';
 
 // Weight trend over time
@@ -33,19 +34,32 @@ export const calorieTrend = catchAsync(async (req, res) => {
   since.setDate(since.getDate() - range);
   since.setHours(0, 0, 0, 0);
 
+  // Resolve user's calorie goal: manual override > DailyPlan target > 2000 default
+  const user = await User.findById(req.user._id).select('profile.startingStats');
+  const manualGoal = user?.profile?.startingStats?.calorieGoal || 0;
+
+  // Fetch most recent DailyPlan's calories_target as fallback
+  let planGoal = 0;
+  if (!manualGoal) {
+    const latestPlan = await DailyPlan.findOne({ user_id: req.user._id }).sort({ date: -1 }).select('calories_target');
+    planGoal = latestPlan?.calories_target || 0;
+  }
+
+  const resolvedGoal = manualGoal || planGoal || 2000;
+
   const logs = await DailyLog.find({
     userId: req.user._id,
     date: { $gte: since },
   })
     .sort({ date: 1 })
-    .select('date metrics.caloriesBurned metrics.calorieGoal');
+    .select('date metrics.caloriesBurned');
 
   res.json({
     status: 'success',
     data: logs.map((l) => ({
       date: l.date,
-      burned: l.metrics.caloriesBurned,
-      goal: l.metrics.calorieGoal,
+      burned: l.metrics.caloriesBurned || 0,
+      goal: resolvedGoal,
     })),
   });
 });
@@ -127,20 +141,22 @@ export const weeklyReport = catchAsync(async (req, res) => {
     date: { $gte: weekAgo },
   });
 
+  const plans = await DailyPlan.find({
+    user_id: req.user._id,
+    date: { $gte: weekAgo },
+  });
+
   const user = await User.findById(req.user._id);
 
   const totalCalories = logs.reduce((a, l) => a + (l.metrics?.caloriesBurned || 0), 0);
-  const totalDistance = logs.reduce((a, l) => a + (l.metrics?.cardioDistanceKm || 0), 0);
-  const totalCardioTime = logs.reduce((a, l) => a + (l.metrics?.cardioTimeMin || 0), 0);
+  const totalSleepHours = logs.reduce((a, l) => a + (l.metrics?.sleepHours || 0), 0);
+  const avgSleepHours = logs.length > 0 ? (totalSleepHours / logs.length).toFixed(1) : 0;
+  
+  const totalWater = plans.reduce((a, p) => a + (p.waterConsumed || 0), 0);
   const workoutDays = logs.filter((l) => l.checklist?.workout).length;
   const fullChecklistDays = logs.filter(
     (l) => l.checklist?.water && l.checklist?.protein && l.checklist?.workout
   ).length;
-
-  const splits = {};
-  logs.forEach((l) => {
-    if (l.metrics?.muscleSplit) splits[l.metrics.muscleSplit] = (splits[l.metrics.muscleSplit] || 0) + 1;
-  });
 
   res.json({
     status: 'success',
@@ -149,9 +165,8 @@ export const weeklyReport = catchAsync(async (req, res) => {
       workoutDays,
       fullChecklistDays,
       totalCalories,
-      totalDistance: Math.round(totalDistance * 10) / 10,
-      totalCardioTime,
-      splits,
+      avgSleepHours,
+      totalWater: totalWater.toFixed(1),
       currentStreak: user?.gamification?.currentStreak || 0,
       totalPoints: user?.gamification?.totalPoints || 0,
     },
@@ -189,4 +204,51 @@ export const exportCsv = catchAsync(async (req, res) => {
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', `attachment; filename=grindtogether_export_${new Date().toISOString().split('T')[0]}.csv`);
   res.send(csv);
+});
+
+// Hydration Analytics Trend
+export const hydrationTrend = catchAsync(async (req, res) => {
+  const range = parseInt(req.query.range) || 30;
+  const since = new Date();
+  since.setDate(since.getDate() - range);
+  since.setHours(0, 0, 0, 0);
+
+  const plans = await DailyPlan.find({
+    user_id: req.user._id,
+    date: { $gte: since },
+  })
+    .sort({ date: 1 })
+    .select('date waterConsumed waterTarget');
+
+  res.json({
+    status: 'success',
+    data: plans.map((p) => ({
+      date: p.date,
+      consumed: p.waterConsumed,
+      target: p.waterTarget,
+    })),
+  });
+});
+
+// Sleep Analytics Trend
+export const sleepTrend = catchAsync(async (req, res) => {
+  const range = parseInt(req.query.range) || 30;
+  const since = new Date();
+  since.setDate(since.getDate() - range);
+  since.setHours(0, 0, 0, 0);
+
+  const logs = await DailyLog.find({
+    userId: req.user._id,
+    date: { $gte: since },
+  })
+    .sort({ date: 1 })
+    .select('date metrics.sleepHours');
+
+  res.json({
+    status: 'success',
+    data: logs.map((l) => ({
+      date: l.date,
+      hours: l.metrics.sleepHours || 0,
+    })),
+  });
 });

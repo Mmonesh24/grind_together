@@ -6,8 +6,10 @@
 .page-wrapper__content {
   flex: 1;
   padding: var(--space-xl);
-  transition: margin-left var(--transition-base);
+  transition: margin-left var(--transition-base), padding var(--transition-base);
   min-height: 100vh;
+  min-width: 0; /* CRITICAL: Allows grid/flex children to shrink past intrinsic width */
+  overflow-x: hidden;
 }
 
 .page-wrapper__content.sidebar-open {
@@ -16,6 +18,12 @@
 
 .page-wrapper__content.sidebar-collapsed {
   margin-left: var(--sidebar-collapsed);
+}
+
+@media (max-width: 1024px) {
+  .page-wrapper__content {
+    padding: var(--space-lg);
+  }
 }
 
 @media (max-width: 768px) {

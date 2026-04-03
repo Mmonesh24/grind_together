@@ -1,6 +1,6 @@
 import User from '../models/User.js';
 
-export const markActive = async (userId) => {
+export const markActive = async (userId, io = null) => {
   const user = await User.findById(userId);
   if (!user) return;
 
@@ -16,17 +16,13 @@ export const markActive = async (userId) => {
     const diffDays = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
 
     if (diffDays === 0) {
-      // Already logged today, no change
       return user.gamification.currentStreak;
     } else if (diffDays === 1) {
-      // Consecutive day
       user.gamification.currentStreak += 1;
     } else {
-      // Streak broken, restart
       user.gamification.currentStreak = 1;
     }
   } else {
-    // First ever log
     user.gamification.currentStreak = 1;
   }
 
@@ -37,5 +33,10 @@ export const markActive = async (userId) => {
   }
 
   await user.save();
+
+  if (io) {
+    io.to(`user:${userId}`).emit('profile:update', { user });
+  }
+
   return user.gamification.currentStreak;
 };

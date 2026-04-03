@@ -10,14 +10,23 @@ const userSchema = new mongoose.Schema(
       name: { type: String, default: '' },
       avatar: { type: String, default: '' },
       gymBranch: { type: String, default: '' },
+      timezone: { type: String, default: 'UTC' },
+      sleepSchedule: { 
+        wakeTime: { type: String, default: '08:00' }, 
+        sleepTime: { type: String, default: '22:00' } 
+      },
       startingStats: {
         weight: { type: Number, default: 0 },
+        height: { type: Number, default: 0 }, // in cm
         bodyFatPct: { type: Number, default: 0 },
+        activity_level: { type: String, enum: ['low', 'medium', 'high', ''], default: '' },
+        gender: { type: String, enum: ['male', 'female', 'other', ''], default: '' },
         fitnessGoal: {
           type: String,
-          enum: ['Lose Weight', 'Build Muscle', 'Get Fit', 'Endurance', ''],
+          enum: ['weight_loss', 'muscle_gain', 'maintenance', 'Lose Weight', 'Build Muscle', 'Get Fit', 'Endurance', ''],
           default: '',
         },
+        calorieGoal: { type: Number, default: 0 },
       },
       qrCode: { type: String, unique: true, sparse: true },
       onboardingComplete: { type: Boolean, default: false },
@@ -27,7 +36,16 @@ const userSchema = new mongoose.Schema(
       currentStreak: { type: Number, default: 0 },
       longestStreak: { type: Number, default: 0 },
       lastActiveDate: { type: Date, default: null },
+      lastSleepStartTime: { type: Date, default: null },
+      lastWakeTime: { type: Date, default: null },
     },
+    pendingNotifications: [
+      {
+        title: { type: String },
+        message: { type: String },
+        timestamp: { type: Date, default: Date.now },
+      }
+    ],
   },
   { timestamps: true }
 );

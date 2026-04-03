@@ -5,6 +5,7 @@ import './Sidebar.css';
 
 const TRAINEE_NAV = [
   { to: '/dashboard', icon: '📊', label: 'Dashboard' },
+  { to: '/daily-plan', icon: '📅', label: 'Daily Plan' },
   { to: '/log', icon: '📝', label: 'Log Activity' },
   { to: '/analytics', icon: '📈', label: 'Analytics' },
   { to: '/challenges', icon: '🏆', label: 'Challenges' },

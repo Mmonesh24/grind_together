@@ -16,6 +16,8 @@ const useNotificationStore = create((set, get) => ({
     set((s) => ({ feed: [item, ...s.feed].slice(0, 50) }));
   },
 
+  setFeed: (feed) => set({ feed: feed.slice(0, 50) }),
+
   clearFeed: () => set({ feed: [] }),
 }));
 

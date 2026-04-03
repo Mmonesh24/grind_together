@@ -1,18 +1,23 @@
 import User from '../models/User.js';
 
-export const awardPoints = async (userId, log) => {
+export const awardPoints = async (userId, logOrAction, io = null) => {
   const user = await User.findById(userId);
   if (!user) return;
 
-  let points = 5; // base points for logging
-
-  const { water, protein, workout } = log.checklist || {};
-  if (water && protein && workout) {
-    points += 10; // full checklist bonus
-  }
+  let points = 5; // base points for standard logging if no type specified
+  
+  // Custom Daily Plan Action Types
+  if (logOrAction.type === 'exercise') points = 10;
+  if (logOrAction.type === 'meal') points = 5;
+  if (logOrAction.type === 'daily_bonus') points = 50;
 
   user.gamification.totalPoints += points;
   await user.save();
+
+  if (io) {
+    io.to(`user:${userId}`).emit('profile:update', { user });
+  }
+
   return points;
 };
 

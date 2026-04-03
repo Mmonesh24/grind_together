@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   weightTrend, calorieTrend, workoutBreakdown,
   cardioTrend, heatmap, weeklyReport, exportCsv,
+  hydrationTrend, sleepTrend
 } from '../controllers/analyticsController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
@@ -15,5 +16,7 @@ router.get('/cardio', cardioTrend);
 router.get('/heatmap', heatmap);
 router.get('/weekly-report', weeklyReport);
 router.get('/export', exportCsv);
+router.get('/hydration', hydrationTrend);
+router.get('/sleep', sleepTrend);
 
 export default router;

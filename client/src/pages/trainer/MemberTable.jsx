@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import GlassCard from '../../components/ui/GlassCard';
 import api from '../../services/api';
+import { getSocket } from '../../services/socket';
 import './MemberTable.css';
 
 export default function MemberTable() {
@@ -9,15 +10,31 @@ export default function MemberTable() {
   const [sort, setSort] = useState('totalPoints');
   const [filter, setFilter] = useState('all');
 
+  const fetchMembers = async () => {
+    try {
+      const { data } = await api.get('/trainer/members');
+      setMembers(data.data);
+    } catch {}
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const { data } = await api.get('/trainer/members');
-        setMembers(data.data);
-      } catch {}
-      setLoading(false);
-    };
-    fetch();
+    fetchMembers();
+
+    const socket = getSocket();
+    if (socket) {
+      socket.on('stats:update', fetchMembers);
+      socket.on('points:update', fetchMembers);
+      socket.on('challenge:update', fetchMembers);
+      socket.on('profile:update', fetchMembers);
+
+      return () => {
+        socket.off('stats:update', fetchMembers);
+        socket.off('points:update', fetchMembers);
+        socket.off('challenge:update', fetchMembers);
+        socket.off('profile:update', fetchMembers);
+      };
+    }
   }, []);
 
   const handleNudge = async (userId, name) => {
@@ -77,52 +94,54 @@ export default function MemberTable() {
         </div>
       </div>
 
-      <GlassCard>
+      <GlassCard className="table-card">
         {loading ? (
           <p className="empty-state">Loading members...</p>
         ) : filtered.length === 0 ? (
           <p className="empty-state">No members found</p>
         ) : (
-          <table className="members-table">
-            <thead>
-              <tr>
-                <th>Member</th>
-                <th>Points</th>
-                <th>Streak</th>
-                <th>Status</th>
-                <th>Today</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((m) => (
-                <tr key={m.id}>
-                  <td>
-                    <div className="member-cell">
-                      <div className="member-cell__avatar">{m.name.charAt(0).toUpperCase()}</div>
-                      <div>
-                        <div className="member-cell__name">{m.name}</div>
-                        <div className="member-cell__email">{m.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="member-points">{m.totalPoints}</td>
-                  <td>🔥 {m.currentStreak}</td>
-                  <td>
-                    <span className="member-status" style={{ color: statusColor(m.status), borderColor: statusColor(m.status) }}>
-                      {m.status}
-                    </span>
-                  </td>
-                  <td>{m.loggedToday ? '✅' : '○'}</td>
-                  <td>
-                    {m.status === 'inactive' && (
-                      <button className="nudge-btn" onClick={() => handleNudge(m.id, m.name)}>📢 Nudge</button>
-                    )}
-                  </td>
+          <div className="table-container">
+            <table className="members-table">
+              <thead>
+                <tr>
+                  <th>Member</th>
+                  <th>Points</th>
+                  <th>Streak</th>
+                  <th>Status</th>
+                  <th>Today</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map((m) => (
+                  <tr key={m.id}>
+                    <td>
+                      <div className="member-cell">
+                        <div className="member-cell__avatar">{m.name.charAt(0).toUpperCase()}</div>
+                        <div>
+                          <div className="member-cell__name">{m.name}</div>
+                          <div className="member-cell__email">{m.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="member-points">{m.totalPoints}</td>
+                    <td>🔥 {m.currentStreak}</td>
+                    <td>
+                      <span className="member-status" style={{ color: statusColor(m.status), borderColor: statusColor(m.status) }}>
+                        {m.status}
+                      </span>
+                    </td>
+                    <td>{m.loggedToday ? '✅' : '○'}</td>
+                    <td>
+                      {m.status === 'inactive' && (
+                        <button className="nudge-btn" onClick={() => handleNudge(m.id, m.name)}>📢 Nudge</button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </GlassCard>
     </div>

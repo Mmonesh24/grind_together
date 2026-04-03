@@ -1,13 +1,31 @@
+import { useEffect, useState } from 'react';
 import useNotificationStore from '../../store/notificationStore';
+import api from '../../services/api';
 import './ActivityFeed.css';
 
 export default function ActivityFeed() {
-  const { feed } = useNotificationStore();
+  const { feed, setFeed } = useNotificationStore();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeed = async () => {
+      try {
+        const { data } = await api.get('/logs/feed');
+        useNotificationStore.setState({ feed: data.data });
+      } catch {}
+      setLoading(false);
+    };
+    if (feed.length === 0) fetchFeed();
+    else setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="activity-feed">
       <h3 className="activity-feed__title">⚡ Live Activity</h3>
-      {feed.length === 0 ? (
+      {loading ? (
+        <p className="activity-feed__empty">Loading activity...</p>
+      ) : feed.length === 0 ? (
         <p className="activity-feed__empty">No recent activity in your branch</p>
       ) : (
         <div className="activity-feed__list">

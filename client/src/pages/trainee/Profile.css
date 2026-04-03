@@ -1,103 +1,301 @@
+/* ════════════════════════════════════════════════════
+   PROFILE — BOLD BRUTALIST THEME
+════════════════════════════════════════════════════ */
+
 .profile-hero {
   display: flex;
   align-items: center;
-  gap: var(--space-lg);
-  margin-bottom: var(--space-xl);
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
   padding: var(--space-xl);
+  border: var(--border-thick);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-pink);
 }
 
 .profile-hero__avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  width: 100px;
+  height: 100px;
+  background: var(--volt);
+  border: var(--border-thick);
+  border-color: var(--black);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--bg-void);
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--black);
   flex-shrink: 0;
+  box-shadow: 6px 6px 0px var(--white);
 }
 
 .profile-hero__info { flex: 1; }
 
 .profile-hero__name {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+  text-shadow: 2px 2px 0px var(--pink);
 }
 
 .profile-hero__branch {
   display: block;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-top: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--volt);
 }
 
 .profile-hero__role {
   display: inline-block;
-  margin-top: var(--space-xs);
-  font-size: 0.65rem;
-  padding: 2px 10px;
-  background: var(--accent-glow);
-  color: var(--accent-primary);
-  border-radius: var(--radius-full);
-  letter-spacing: 0.08em;
-  font-weight: 600;
+  margin-top: var(--space-sm);
+  font-size: 0.8rem;
+  font-weight: 900;
+  padding: 4px 12px;
+  background: var(--black);
+  color: var(--white);
+  border: var(--border-thin);
+  border-color: var(--volt);
+}
+
+.profile-hero__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-md);
+}
+
+.btn-outline--sm {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  border: 2px solid var(--white);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  background: transparent;
+  color: var(--white);
+}
+
+.btn-outline--sm:hover {
+  background: var(--white);
+  color: var(--black);
+  box-shadow: 4px 4px 0px var(--pink);
+  transform: translate(-2px, -2px);
 }
 
 .profile-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-md);
-  margin-bottom: var(--space-xl);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
 }
 
-.profile-starting { margin-bottom: var(--space-md); }
-.profile-starting h3 { font-size: 1rem; margin-bottom: var(--space-md); }
+.profile-starting {
+  border: var(--border-thick);
+  padding: var(--space-xl);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-cyan);
+}
+
+.profile-starting h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-xl);
+  color: var(--volt);
+  border-bottom: var(--border-thin);
+  padding-bottom: 8px;
+}
 
 .profile-starting__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
-.profile-stat-item { text-align: center; }
+.profile-stat-item {
+  text-align: left;
+  border-left: var(--border-thin);
+  padding-left: var(--space-sm);
+}
 
 .profile-stat-item__label {
   display: block;
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-xs);
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
 }
 
 .profile-stat-item__value {
   font-family: var(--font-mono);
-  font-size: 1.1rem;
-  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--white);
 }
 
-.profile-qr h3 { font-size: 1rem; margin-bottom: var(--space-md); }
+.profile-qr {
+  border: var(--border-thick);
+  padding: var(--space-xl);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-volt);
+}
+
+.profile-qr h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-xl);
+  color: var(--white);
+}
 
 .profile-qr__placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-xl);
-  background: var(--bg-elevated);
-  border-radius: var(--radius-md);
-  border: 2px dashed var(--border-subtle);
+  gap: var(--space-md);
+  padding: var(--space-2xl);
+  background: var(--black);
+  border: var(--border-thick);
+  border-style: dashed;
+  border-color: var(--pink);
 }
 
-.profile-qr__placeholder span:first-child { font-size: 3rem; }
+.profile-qr__placeholder span:first-child {
+  font-size: 4rem;
+  filter: drop-shadow(4px 4px 0px var(--volt));
+}
 
 .profile-qr__id {
   font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--volt);
+  word-break: break-all;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .profile-hero { padding: var(--space-lg); gap: var(--space-lg); }
+  .profile-hero__name { font-size: 2rem; }
+  .profile-stats { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .profile-hero { flex-direction: column; text-align: center; }
+  .profile-hero__avatar { width: 80px; height: 80px; font-size: 2.5rem; }
+  .profile-hero__name { font-size: 1.8rem; }
+  .profile-stats { grid-template-columns: 1fr; }
+  .profile-starting__grid { grid-template-columns: 1fr; }
+  .profile-stat-item { border-left: none; border-bottom: var(--border-thin); padding: var(--space-sm) 0; }
+  .profile-qr__placeholder { padding: var(--space-xl); border-style: solid; }
+  .profile-qr__placeholder span:first-child { font-size: 3rem; }
+}
+
+/* ── EDIT MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+}
+
+.edit-modal {
+  width: 100%;
+  max-width: 500px;
+  border: var(--border-thick);
+  border-color: var(--white);
+  background: var(--bg-surface) !important;
+  box-shadow: 0 0 50px rgba(255, 92, 53, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+  border-bottom: var(--border-thick);
+  border-color: var(--pink);
+  padding-bottom: var(--space-sm);
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  color: var(--white);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.input-group input, 
+.input-group select {
+  background: var(--black);
+  border: 1px solid var(--border-subtle);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+.highlighted-input {
+  background: rgba(255, 92, 53, 0.1);
+  padding: var(--space-md);
+  border: 1px dashed var(--pink);
+  border-radius: var(--radius-md);
+}
+
+.highlighted-input label {
+  color: var(--pink);
+}
+
+.input-hint {
   font-size: 0.7rem;
   color: var(--text-muted);
-  word-break: break-all;
+  margin-top: -4px;
+  margin-bottom: 4px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-md);
+}
+
+.profile-stat-item.highlight {
+  border-color: var(--pink);
+  background: rgba(255, 92, 53, 0.05);
+  padding: var(--space-sm);
+}
+
+.profile-stat-item.highlight .profile-stat-item__value {
+  color: var(--pink);
 }

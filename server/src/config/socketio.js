@@ -32,8 +32,9 @@ export const setupSocketIO = (httpServer, corsOrigin) => {
     // Auto-join user's gym branch room
     const branch = socket.user.profile?.gymBranch;
     if (branch) {
-      socket.join(`branch:${branch}`);
-      console.log(`  → Joined room: branch:${branch}`);
+      const room = `branch:${branch.toLowerCase()}`;
+      socket.join(room);
+      console.log(`  → Joined room: ${room}`);
     }
 
     // Join personal room for direct notifications
@@ -41,7 +42,11 @@ export const setupSocketIO = (httpServer, corsOrigin) => {
 
     // Handle branch join
     socket.on('join:branch', ({ branch }) => {
-      socket.join(`branch:${branch}`);
+      if (branch) {
+        const room = `branch:${branch.toLowerCase()}`;
+        socket.join(room);
+        console.log(`  → Explicitly joined room: ${room}`);
+      }
     });
 
     // Setup handlers

@@ -1,11 +1,17 @@
 import express from 'express';
 import { createServer } from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import connectDB from './config/db.js';
 import env from './config/env.js';
 import { setupSocketIO } from './config/socketio.js';
 import { startStreakJob } from './jobs/streakJob.js';
+import { startWaterJob } from './jobs/waterJob.js';
 import errorHandler from './middlewares/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import logRoutes from './routes/logRoutes.js';
@@ -15,6 +21,10 @@ import challengeRoutes from './routes/challengeRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import trainerRoutes from './routes/trainerRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import dailyPlanRoutes from './routes/dailyPlanRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
+import { startNotificationJob } from './jobs/notificationJob.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -25,10 +35,13 @@ const io = setupSocketIO(httpServer, env.CORS_ORIGIN);
 app.set('io', io);
 
 startStreakJob();
+startWaterJob(io);
+startNotificationJob(io);
 
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.get('/', (req, res) => res.json({ status: 'ok', message: 'GrindTogether API' }));
 app.use('/api/auth', authRoutes);
@@ -39,6 +52,9 @@ app.use('/api/challenges', challengeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/trainer', trainerRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/daily-plan', dailyPlanRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.use(errorHandler);
 
