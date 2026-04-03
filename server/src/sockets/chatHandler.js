@@ -7,7 +7,7 @@ export const setupChatHandler = (io, socket) => {
     const chatMsg = await ChatMessage.create({
       roomId,
       senderId: socket.user._id,
-      senderName: socket.user.profile?.name || 'Anonymous',
+      senderName: socket.user.profile?.name || socket.user.email?.split('@')[0] || 'User',
       senderAvatar: socket.user.profile?.avatar || '',
       message: message.trim(),
     });

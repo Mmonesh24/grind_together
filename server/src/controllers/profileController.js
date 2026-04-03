@@ -38,7 +38,14 @@ export const updateProfile = catchAsync(async (req, res) => {
       const room = `branch:${gymBranch.toLowerCase()}`;
       io.to(room).emit('stats:update', { type: 'totalMembers' });
     }
-    io.to(`user:${user._id.toString()}`).emit('profile:update', { user });
+    
+    // Refresh all active socket sessions for this user with their new profile data
+    const userRoom = `user:${user._id.toString()}`;
+    io.to(userRoom).emit('profile:update', { user });
+    
+    // Ensure actual socket object session data is updated
+    const sockets = await io.in(userRoom).fetchSockets();
+    sockets.forEach(s => { s.user = user; });
   }
 
   res.json({
@@ -72,7 +79,13 @@ export const completeOnboarding = catchAsync(async (req, res) => {
       const room = `branch:${gymBranch.toLowerCase()}`;
       io.to(room).emit('stats:update', { type: 'totalMembers' });
     }
-    io.to(`user:${user._id.toString()}`).emit('profile:update', { user });
+    
+    // Refresh all active socket sessions for this user after onboarding
+    const userRoom = `user:${user._id.toString()}`;
+    io.to(userRoom).emit('profile:update', { user });
+    
+    const sockets = await io.in(userRoom).fetchSockets();
+    sockets.forEach(s => { s.user = user; });
   }
 
   res.json({

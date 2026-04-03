@@ -60,6 +60,7 @@ export const login = catchAsync(async (req, res, next) => {
   }
 
   const isMatch = await bcrypt.compare(password, user.passwordHash);
+  
   if (!isMatch) {
     return next(new AppError('Invalid email or password', 401));
   }
