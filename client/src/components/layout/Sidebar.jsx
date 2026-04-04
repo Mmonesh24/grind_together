@@ -42,7 +42,7 @@ export default function Sidebar() {
       <div className="sidebar__header">
         <div className="sidebar__logo">
           <span className="sidebar__logo-icon">💪</span>
-          {sidebarOpen && <span className="sidebar__logo-text">GrindTogether</span>}
+          <span className="sidebar__logo-text">GrindTogether</span>
         </div>
         <button className="sidebar__toggle" onClick={toggleSidebar}>
           {sidebarOpen ? '◀' : '▶'}
@@ -63,13 +63,13 @@ export default function Sidebar() {
             }
           >
             <span className="sidebar__link-icon">{item.icon}</span>
-            {sidebarOpen && <span className="sidebar__link-label">{item.label}</span>}
+            <span className="sidebar__link-label">{item.label}</span>
           </NavLink>
         ))}
       </nav>
 
       <div className="sidebar__footer">
-        {sidebarOpen && user && (
+        {user && (
           <div className="sidebar__user">
             <div className="sidebar__user-avatar">
               {user.profile?.name?.charAt(0)?.toUpperCase() || '?'}
@@ -81,8 +81,8 @@ export default function Sidebar() {
           </div>
         )}
         <button className="sidebar__logout" onClick={handleLogout}>
-          <span>🚪</span>
-          {sidebarOpen && <span>Logout</span>}
+          <span className="sidebar__link-icon">🚪</span>
+          <span className="sidebar__link-label">Logout</span>
         </button>
       </div>
     </aside>

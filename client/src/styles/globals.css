@@ -22,6 +22,18 @@ h1, h2, h3, h4, .display-text {
   text-transform: uppercase;
 }
 
+/* ═══ Responsive Typography Scale ═══ */
+h1 { font-size: clamp(2.25rem, 8vw, 3.5rem); line-height: 1.1; }
+h2 { font-size: clamp(1.75rem, 6vw, 2.5rem); line-height: 1.2; }
+h3 { font-size: clamp(1.25rem, 4vw, 1.75rem); }
+
+@media (max-width: 768px) {
+  :root {
+    --section-gap: 20px;
+    --container-pad: 1.25rem;
+  }
+}
+
 /* ═══ Page Animations (Snappier for Brutalism) ═══ */
 @keyframes brutalSlide {
   from { opacity: 0; transform: translateY(10px); }

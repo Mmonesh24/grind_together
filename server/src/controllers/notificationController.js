@@ -1,6 +1,8 @@
 import { sendPushToUser } from '../services/notificationService.js';
 import PushSubscription from '../models/PushSubscription.js';
+import User from '../models/User.js';
 import DailyLog from '../models/DailyLog.js';
+import DailyPlan from '../models/DailyPlan.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 
@@ -47,17 +49,22 @@ export const handleAction = catchAsync(async (req, res, next) => {
     return next(new AppError('Unauthorized: Individual not recognized from notification action', 401));
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const now = new Date();
+  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
-  // Update DailyLog
+  // 1. Update DailyLog (Metric tracking)
   let log = await DailyLog.findOne({ userId, date: today });
   if (!log) {
     log = await DailyLog.create({ userId, date: today });
   }
 
-  // Also update DailyPlan for consistency if it exists
-  const plan = await DailyPlan.findOne({ user_id: userId, date: today });
+  // 2. Update DailyPlan (UI tracking/Circles/Tank)
+  let plan = await DailyPlan.findOne({ user_id: userId, date: today });
+  if (!plan) {
+    plan = await DailyPlan.create({ user_id: userId, date: today });
+  }
+
+  let toastMessage = '';
 
   switch (action) {
     case 'woke-up':
@@ -70,41 +77,66 @@ export const handleAction = catchAsync(async (req, res, next) => {
 
         log.metrics.sleepHours = sleepHours;
         user.gamification.lastWakeTime = wakeTime;
+        user.gamification.points += 50; // Wake up on time bonus
         await user.save();
+        toastMessage = `🌅 Good morning! You slept ${sleepHours}h. +50XP`;
       }
       break;
+
     case 'water-drunk':
+      const waterIncrement = 0.25; // 250ml per "drunk" tap
+      plan.waterConsumed = (plan.waterConsumed || 0) + waterIncrement;
       log.checklist.water = true;
-      if (plan) {
-         plan.waterConsumed += 0.25; // Assume 250ml per "drunk" action
-         await plan.save();
-      }
+      toastMessage = `💧 Hydration Synced! +${waterIncrement}L`;
       break;
+
     case 'meal-ate':
-      const mealType = payload?.mealType; // breakfast, lunch, etc.
-      if (mealType && log.checklist[mealType] !== undefined) {
-        log.checklist[mealType] = true;
-      }
-      if (plan && mealType) {
-        // Try to find the meal in the plan and mark as completed
-        const meal = plan.meals.find(m => m.mealType === mealType || m.name.toLowerCase().includes(mealType));
+      const mealType = payload?.mealType; // breakfast, lunch, dinner
+      if (mealType) {
+        // Mark in DailyLog checklist
+        if (log.checklist[mealType] !== undefined) {
+          log.checklist[mealType] = true;
+        }
+
+        // Mark in DailyPlan meals
+        const meal = plan.meals.find(m => 
+          m.mealType === mealType || 
+          m.name.toLowerCase().includes(mealType.toLowerCase())
+        );
         if (meal) {
           meal.completed = true;
-          await plan.save();
+          // Add macros to log metrics
+          log.metrics.calories = (log.metrics.calories || 0) + (meal.calories || 0);
+          log.metrics.protein = (log.metrics.protein || 0) + (meal.protein || 0);
         }
+        toastMessage = `🍱 ${mealType.charAt(0).toUpperCase() + mealType.slice(1)} logged successfully!`;
       }
       break;
+
     default:
       return next(new AppError('Unknown action', 400));
   }
 
+  await plan.save();
   await log.save();
 
-  // Notify socket rooms so UI updates immediately if open
+  // 3. Notify socket rooms for real-time UI refresh
   const io = req.app.get('io');
   if (io) {
-    io.to(`user:${userId}`).emit('plan:update', { plan: log });
+    const userRoom = `user:${userId.toString()}`;
+    
+    // Update the circles/tank
+    io.to(userRoom).emit('plan:update', { plan });
+    
+    // Show a toast if message exists
+    if (toastMessage) {
+      io.to(userRoom).emit('notification:personal', {
+        title: 'Action Synced',
+        message: toastMessage,
+        type: 'success'
+      });
+    }
   }
 
-  res.json({ status: 'success', data: log });
+  res.json({ status: 'success', data: { plan, log } });
 });

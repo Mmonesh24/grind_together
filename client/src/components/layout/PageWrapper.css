@@ -28,7 +28,8 @@
 
 @media (max-width: 768px) {
   .page-wrapper__content {
-    margin-left: var(--sidebar-collapsed) !important;
-    padding: var(--space-md);
+    margin-left: 0 !important;
+    padding: var(--container-pad);
+    padding-bottom: 90px; /* Space for the bottom nav bar */
   }
 }

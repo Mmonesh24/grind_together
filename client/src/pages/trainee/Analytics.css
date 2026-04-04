@@ -203,20 +203,28 @@
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .analytics-grid { grid-template-columns: 1fr 1fr; }
-}
-
 @media (max-width: 768px) {
-  .analytics-grid { grid-template-columns: 1fr; }
-  .analytics-title { font-size: 2.2rem; }
-  .analytics-header { padding: var(--space-sm); }
-  .report-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
-  .report-stat__val { font-size: 1.8rem; }
+  .analytics-header { padding: 12px; border-bottom-width: 4px; }
+  .analytics-title { font-size: 1.75rem; text-shadow: 2px 2px 0px var(--volt); }
+  .analytics-controls { width: 100%; gap: 10px; }
+  .analytics-range, .analytics-export { flex: 1; font-size: 0.8rem; padding: 10px; }
+  
+  .report-card { padding: 16px; margin-bottom: 24px; }
+  .report-card h3 { font-size: 1.1rem; margin-bottom: 16px; }
+  .report-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .report-stat { padding-left: 10px; }
+  .report-stat__val { font-size: 1.5rem; }
+  .report-stat__lbl { font-size: 0.7rem; }
+  
+  .analytics-grid { grid-template-columns: 1fr; gap: 20px; }
+  .chart-card { padding: 12px; }
+  .chart-card h3 { font-size: 0.95rem; margin-bottom: 12px; }
+  
+  .heatmap-card { padding: 12px; }
+  .heatmap-card h3 { font-size: 0.95rem; }
+  .heatmap-subtitle { font-size: 0.75rem; }
 }
 
 @media (max-width: 480px) {
-  .analytics-controls { width: 100%; flex-direction: column; }
-  .analytics-range, .analytics-export { width: 100%; }
   .report-grid { grid-template-columns: 1fr; }
 }

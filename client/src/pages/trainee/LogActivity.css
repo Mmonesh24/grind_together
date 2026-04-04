@@ -318,9 +318,20 @@
 }
 
 /* Responsive */
-@media (max-width: 600px) {
-  .log-page__title { font-size: 1.8rem; }
-  .log-field-single { max-width: 100%; }
-  .summary-stat-row { grid-template-columns: repeat(2, 1fr); }
-  .ssc-val { font-size: 1.3rem; }
+@media (max-width: 768px) {
+  .log-page { padding: 12px; }
+  .log-page__title { font-size: 1.75rem; text-shadow: 2px 2px 0px var(--volt); }
+  .log-page__sub { font-size: 0.85rem; margin-bottom: 24px; }
+  
+  .log-auto-summary { padding: 16px; margin-bottom: 24px; }
+  .auto-summary-title { font-size: 1.15rem; }
+  .summary-stat-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ssc-val { font-size: 1.2rem; }
+  .ssc-icon { font-size: 1.25rem; }
+  
+  .log-section { padding: 16px; }
+  .log-section h3 { font-size: 1rem; }
+  .log-textarea { font-size: 0.9rem; min-height: 80px; }
+  
+  .log-submit { width: 100%; padding: 14px; font-size: 1rem; box-shadow: 4px 4px 0px var(--white); }
 }

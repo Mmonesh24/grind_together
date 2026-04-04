@@ -453,34 +453,57 @@
 
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-/* ════════ RESPONSIVE ════════ */
-@media (max-width: 1400px) {
-  .main-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); }
+/* ════════ RESPONSIVE (SCALED & STACKED) ════════ */
+@media (max-width: 1024px) {
+  .hero { padding: 48px 32px 32px; gap: 32px; }
+  .metrics-strip { padding: 0 32px 32px; }
+  .main-grid { padding: 0 32px 60px; }
 }
 
-@media (max-width: 1200px) {
-  .hero         { padding: 60px 40px 40px; }
-  .metrics-strip{ padding: 0 40px 36px; }
-  .main-grid    { padding: 0 32px 48px; }
-}
-
-@media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; padding: 48px 24px 32px; gap: 40px; }
-  .hero__right { display: flex; transform: scale(0.85); order: -1; }
+@media (max-width: 768px) {
+  .hero { 
+    grid-template-columns: 1fr; 
+    padding: 32px 20px; 
+    gap: 32px; 
+    text-align: center;
+  }
+  
+  .hero__right { order: -1; transform: none; display: flex; justify-content: center; }
+  .hero__ring-wrap { width: 190px; height: 190px; }
+  .hero__ring-pct { font-size: 2.75rem; }
+  .hero__ring-label { font-size: 0.9rem; }
   .hero-float { display: none; }
-  .metrics-strip { padding: 0 24px 28px; flex-wrap: wrap; }
-  .metric-pill { min-width: calc(50% - 12px); flex: 1 1 calc(50% - 12px); }
-  .main-grid { grid-template-columns: 1fr; padding: 0 24px 48px; }
+  
+  .hero__eyebrow { margin: 0 auto 20px; font-size: 0.85rem; padding: 6px 12px; }
+  .hero__title { font-size: 3rem; margin-bottom: 16px; }
+  .hero__sub { margin: 0 auto 32px; font-size: 1rem; border-left: none; border-bottom: 4px solid var(--volt); padding: 0 0 12px; }
+  .hero__actions { justify-content: center; gap: 16px; }
+  .hero__actions button { width: 100%; font-size: 0.9rem; padding: 12px; }
+
+  .metrics-strip { padding: 0 20px 24px; gap: 16px; }
+  .metric-pill { 
+    min-width: calc(50% - 8px); 
+    padding: 16px; 
+    gap: 8px;
+  }
+  .metric-pill__icon { font-size: 1.75rem; padding-bottom: 8px; }
+  .metric-pill__value { font-size: 1.75rem; }
+  .metric-pill__label { font-size: 0.8rem; margin-top: 4px; }
+
+  .main-grid { grid-template-columns: 1fr; padding: 0 20px 60px; gap: 24px; }
+  .glass-panel { padding: 20px; }
+  .panel-title { font-size: 1.5rem; margin-bottom: 20px; }
+  .panel-badge { font-size: 0.85rem; padding: 4px 10px; margin-bottom: 12px; }
+  
+  .check-row { padding: 12px; gap: 12px; }
+  .check-row__icon { font-size: 1.25rem; }
+  .check-row__label { font-size: 0.9rem; }
+  
+  .moto-banner__word { font-size: 1.75rem; }
 }
 
-@media (max-width: 600px) {
-  .hero__title { font-size: clamp(3rem, 10vw, 4rem); }
-  .metric-pill { min-width: 100%; flex: 1 1 100%; }
-  .hero__actions { flex-direction: column; width: 100%; }
-  .hero__actions button { width: 100%; }
-  .hero__ring-wrap { width: 200px; height: 200px; }
-  .hero__ring-pct { font-size: 3rem; }
-  .panel-title { font-size: 1.5rem; }
+@media (max-width: 480px) {
+  .metric-pill { min-width: 100%; }
 }
 
 /* Scrollbar */

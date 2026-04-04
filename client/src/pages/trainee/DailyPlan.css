@@ -372,11 +372,28 @@
   100% { transform: scale(1); }
 }
 
-@media (max-width: 900px) {
-  .dp-grid {
-    grid-template-columns: 1fr;
-  }
-  .dp-header h1 {
-    font-size: 2.5rem;
-  }
+@media (max-width: 768px) {
+  .dp-header h1 { font-size: 2.25rem; letter-spacing: -1px; }
+  .dp-header { border-left-width: 5px; padding-left: 12px; }
+  
+  .dp-rings { gap: 20px; padding: 10px 0; }
+  .ring-circle { width: 100px; height: 100px; font-size: 1.25rem; }
+  .ring-circle::after { width: 75px; height: 75px; }
+  
+  .dp-macro-summary { grid-template-columns: 1fr; gap: 10px; padding: 12px !important; }
+  .macro-goal-card .value { font-size: 1.25rem; }
+  
+  .water-tank { width: 100px; height: 150px; }
+  .dp-water-reading { font-size: 1.5rem; }
+  .dp-water-controls button { width: 50px; height: 50px; font-size: 1.25rem; }
+  
+  .dp-grid { grid-template-columns: 1fr; gap: 24px; }
+  .dp-section h2 { font-size: 1.5rem; margin-bottom: 16px; border-bottom-width: 4px; }
+  
+  .dp-item { padding: 12px; gap: 12px; }
+  .dp-item input[type="checkbox"] { width: 24px; height: 24px; }
+  .dp-item-details h4 { font-size: 1.1rem; }
+  .dp-item-details p { font-size: 0.95rem; }
+  
+  .dp-bonus-banner { font-size: 1.1rem; padding: 12px; margin: 12px 0; }
 }

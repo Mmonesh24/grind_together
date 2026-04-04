@@ -3,6 +3,16 @@ dist/
 build/
 .env
 .env.local
+.env.*
 *.log
 .DS_Store
 Thumbs.db
+server/uploads/
+*.mp4
+*.webm
+*.png
+*.webp
+*.jpg
+*.jpeg
+.gemini/
+.antigravity/
